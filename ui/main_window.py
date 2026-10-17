@@ -17,7 +17,7 @@ from PySide6.QtWidgets import (
 from core import config as cfg_module
 from core.config import Settings, resolve_engine_dir, resolve_voice
 from core.engine_client import TTSClient
-from core.engine_manager import EngineManager, is_installed, LOG_DIR
+from core.engine_manager import EngineManager, detect_infer_device, is_installed, LOG_DIR
 from core.segmenter import split_sentences
 from core.synthesizer import SynthRequest, SynthResult, SynthesisError, auto_basename, synthesize
 from ui import theme
@@ -76,7 +76,7 @@ class SynthWorker(QObject):
                 if not self.manager.wait_online(self.api_url, 180.0, self._cancelled):
                     self.failed.emit("引擎启动超时。请看 logs/engine.log 末尾的报错。")
                     return
-                self.log.emit("INFO", "引擎已就绪")
+                self.log.emit("INFO", f"引擎已就绪（推理设备：{detect_infer_device()}）")
 
             result = synthesize(
                 self.req, client,

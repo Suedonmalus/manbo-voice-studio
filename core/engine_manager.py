@@ -24,6 +24,19 @@ def is_installed() -> bool:
     return os.path.isfile(engine_python()) and os.path.isfile(api_script())
 
 
+def detect_infer_device() -> str:
+    """有 NVIDIA 显卡就用 cuda；没有则退回 cpu（能跑，但慢 20-50 倍）。"""
+    creationflags = getattr(subprocess, "CREATE_NO_WINDOW", 0) if sys.platform == "win32" else 0
+    try:
+        r = subprocess.run(["nvidia-smi", "-L"], capture_output=True, timeout=10,
+                           creationflags=creationflags)
+        if r.returncode == 0 and b"GPU" in (r.stdout or b""):
+            return "cuda"
+    except Exception:
+        pass
+    return "cpu"
+
+
 class EngineManager:
     def __init__(self) -> None:
         self.proc: subprocess.Popen | None = None
@@ -55,6 +68,7 @@ class EngineManager:
             engine_python(), "-X", "utf8", "api.py",
             "-a", host or "127.0.0.1",
             "-p", port or "9880",
+            "-d", detect_infer_device(),
         ]
         # 音色模型可选：留空则用引擎自带的 v2Pro 预训练做零样本克隆。
         # 注意参考音频路径必须是纯英文（中文路径会让引擎的 argv 解码出错）。

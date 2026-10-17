@@ -16,7 +16,15 @@
 ## 从哪来
 
 - 曼波音色模型与参考音频：[Tsukimisaka/MamboTTS](https://github.com/Tsukimisaka/MamboTTS)（MIT）
+  - 具体位置在它的 [Releases](https://github.com/Tsukimisaka/MamboTTS/releases)：下载 `MamboTTS-v1.2.x-full.zip`，
+    解压后取 `models/` 目录下的这三个文件放进本目录
 - 也可以用自己的数据训练：参见 [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS) 的训练流程
+
+## 自动获取
+
+运行 `python tools/agent_install.py --dest <安装目录>` 会自动下载上述发布包，
+只提取这三个文件放进本目录，不会把整个 223MB 的客户端包塞进来。
+详见 [AGENT_INSTALL.md](../AGENT_INSTALL.md)。
 
 ## 只放 refer.wav 也能用
 

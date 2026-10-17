@@ -1,4 +1,4 @@
-﻿"""合成流水线：文本 → 逐句合成 → 拼接 → WAV + SRT。"""
+"""合成流水线：文本 → 逐句合成 → 拼接 → WAV + SRT。"""
 from __future__ import annotations
 
 import os
@@ -110,6 +110,9 @@ def synthesize(req: SynthRequest, client: TTSClient, *, log_cb=None, progress_cb
     log("INFO", f"文案切分为 {total} 句，共 {len(text)} 字")
 
     out_dir = req.output_dir or os.getcwd()
+    if not os.path.isabs(out_dir):
+        from core.config import ROOT
+        out_dir = os.path.join(ROOT, out_dir)
     os.makedirs(out_dir, exist_ok=True)
     base = safe_basename(req.basename) if req.basename.strip() else auto_basename(text)
     wav_path, srt_path = unique_paths(out_dir, base)

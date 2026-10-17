@@ -1,4 +1,4 @@
-﻿"""配置：音色、语速、输出、字幕等参数的持久化。"""
+"""配置：音色、语速、输出、字幕等参数的持久化。"""
 from __future__ import annotations
 
 import json
@@ -12,11 +12,13 @@ CONFIG_PATH = os.path.join(ROOT, "config.json")
 MODELS_DIR = os.path.join(ROOT, "models")
 
 # 引擎候选目录：GPT-SoVITS 对中文路径敏感，默认装到纯英文路径
-_ENGINE_CANDIDATES = [
-    r"F:\MamboVoiceEngine\GPT-SoVITS",
-    r"D:\MamboVoiceEngine\GPT-SoVITS",
-    os.path.join(ROOT, "engine", "GPT-SoVITS"),
-]
+def _engine_candidates() -> list[str]:
+    cands = [f"{d}:\\MamboVoiceEngine\\GPT-SoVITS" for d in ("F", "D", "E", "C")]
+    cands.append(os.path.join(ROOT, "engine", "GPT-SoVITS"))
+    return cands
+
+
+_ENGINE_CANDIDATES = _engine_candidates()
 
 
 def resolve_engine_dir() -> str:
