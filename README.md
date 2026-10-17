@@ -68,12 +68,13 @@
 
 ### 方式一：让 AI Agent 全自动安装
 
-如果你在用 Claude Code / Cursor / Codex / DSH 这类 Agent，可以只把安装目录告诉它，
-其余（Python、解压工具、引擎、音色模型）全部由它自己搞定：
+如果你在用 Claude Code / Cursor / Codex / DSH 这类 Agent，**连下载都不用自己动手**——
+把仓库链接和安装目录丢给它就行：
 
-> 请按仓库里的 `AGENT_INSTALL.md` 把「曼波配音工坊」装好，安装目录：`D:/MamboVoiceEngine/GPT-SoVITS`
+> 帮我安装这个项目：https://github.com/Suedonmalus/manbo-voice-studio
+> 请按仓库里的 `AGENT_INSTALL.md` 执行，装到 `D:/MamboVoiceEngine/GPT-SoVITS`
 
-Agent 会执行 `python tools/agent_install.py --dest <你的目录>`，一路下载、解压、取模型并自检。
+Agent 会自己拉代码、装 Python 和 7-Zip、下载 8.2GB 引擎、取音色模型，最后按验收标准自检。
 完整手册见 **[AGENT_INSTALL.md](AGENT_INSTALL.md)**。
 
 ### 方式二：手动安装

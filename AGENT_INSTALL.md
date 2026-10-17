@@ -15,14 +15,25 @@
 
 ## 给用户：把这段话复制给你的 Agent
 
+**情况 A：已经下载好项目了**
+
 ```
 我下载了「曼波配音工坊」（曼波语音生成软件）。
-请严格按照仓库根目录的 AGENT_INSTALL.md 帮我把所有依赖装好，最后按验收标准向我汇报。
+请严格按照项目根目录的 AGENT_INSTALL.md 帮我把所有依赖装好，最后按验收标准向我汇报。
 
 安装目录：D:/MamboVoiceEngine/GPT-SoVITS    ← 改成你想要的目录（必须纯英文、不要中文）
 ```
 
-把最后一行换成你自己的路径即可。目录不存在没关系，Agent 会创建。
+**情况 B：只有仓库链接（更省事，Agent 会自己拉代码）**
+
+```
+帮我安装这个项目：https://github.com/Suedonmalus/manbo-voice-studio
+请按仓库里的 AGENT_INSTALL.md 执行：自己把代码拉到本地，装好所有依赖，最后按验收标准向我汇报。
+
+安装目录：D:/MamboVoiceEngine/GPT-SoVITS    ← 改成你想要的目录（必须纯英文、不要中文）
+```
+
+两种情况都只需要改最后那行安装目录；目录不存在没关系，Agent 会创建。
 
 ---
 
@@ -30,7 +41,33 @@
 
 按顺序执行，每步都要检查结果，不要跳步。
 
-### 第 0 步：确认环境
+### 第 0 步：拿到代码（用户只给了链接时）
+
+先确认当前目录有没有项目文件：
+
+```powershell
+Get-ChildItem app.py, tools/agent_install.py
+```
+
+都在 → 跳过本步。缺 → 用下面任一方式拉取：
+
+```powershell
+# 方式 1：git clone（推荐，以后能 git pull 更新）
+git clone https://github.com/Suedonmalus/manbo-voice-studio.git
+cd manbo-voice-studio
+
+# 方式 2：没有 git 就下源码包再解压
+curl.exe -L -o studio.zip https://github.com/Suedonmalus/manbo-voice-studio/archive/refs/tags/v1.1.zip
+Expand-Archive studio.zip -DestinationPath .
+cd manbo-voice-studio-1.1
+```
+
+> 项目根目录就是能看到 `app.py`、`tools/`、`README.md` 的那一层。
+> 下源码包解压后会多一层 `manbo-voice-studio-1.1/`，别在上一层找 `tools/agent_install.py`。
+> 既没有 git 也没有 curl 时，让用户从 GitHub 页面 Code → Download ZIP 手动下载。
+> 上面固定写的是 `v1.1`，如果仓库有更新的 tag，换成最新的那个。
+
+### 第 1 步：确认环境
 
 ```powershell
 # 必须是 Windows
@@ -39,16 +76,16 @@
 Get-ChildItem app.py, tools/agent_install.py
 ```
 
-### 第 1 步：确保 Python 3.10+
+### 第 2 步：确保 Python 3.10+
 
 ```powershell
 python --version
 ```
 
-- 输出 `Python 3.10` 及以上 → 跳过第 2 步
-- 提示找不到 `python`，或版本低于 3.10 → 执行第 2 步
+- 输出 `Python 3.10` 及以上 → 跳过第 3 步
+- 提示找不到 `python`，或版本低于 3.10 → 执行第 3 步
 
-### 第 2 步：安装 Python（仅在第 1 步不通过时）
+### 第 3 步：安装 Python（仅在第 2 步不通过时）
 
 **不需要管理员权限**，装用户级即可。
 
@@ -83,13 +120,13 @@ $PY = "$env:LOCALAPPDATA\Programs\Python\Python312\python.exe"
 & $PY --version
 ```
 
-### 第 3 步：运行全自动安装器
+### 第 4 步：运行全自动安装器
 
 ```powershell
 python tools/agent_install.py --dest "D:/MamboVoiceEngine/GPT-SoVITS"
 ```
 
-（第 2 步用了绝对路径的话，把 `python` 换成 `$PY`）
+（第 3 步用了绝对路径的话，把 `python` 换成 `$PY`）
 
 它会依次完成：
 
@@ -103,7 +140,7 @@ python tools/agent_install.py --dest "D:/MamboVoiceEngine/GPT-SoVITS"
 
 **脚本会把过程日志打到 stderr，把最终结果 JSON 打到 stdout。** 请解析 JSON 而不是靠猜。
 
-### 第 4 步：解析结果
+### 第 5 步：解析结果
 
 成功时退出码 `0`，stdout 形如：
 
@@ -128,7 +165,7 @@ python tools/agent_install.py --dest "D:/MamboVoiceEngine/GPT-SoVITS"
 
 失败时 `ok: false`，并带 `error` 和 `stage`（出错阶段）。
 
-### 第 5 步：可选冒烟测试
+### 第 6 步：可选冒烟测试
 
 静态校验通过后，如果想确认真的能出声：
 
@@ -154,7 +191,7 @@ $dest = "D:/MamboVoiceEngine/GPT-SoVITS"
 
 | 项目 | 谁负责 | 说明 |
 | --- | --- | --- |
-| Python 3.10–3.15 | Agent（第 2 步） | 用户级安装，**不需要管理员** |
+| Python 3.10–3.15 | Agent（第 3 步） | 用户级安装，**不需要管理员** |
 | 7-Zip | Agent 自动 | 优先用系统已装的；没有就下免安装 `7zr.exe` |
 | `requests` / `numpy` | Agent 自动 | 安装器自己会 pip 装（清华镜像） |
 | `PySide6` | 不用管 | 首次运行 `启动.bat` / `python app.py` 时自动装 |
@@ -183,7 +220,7 @@ $dest = "D:/MamboVoiceEngine/GPT-SoVITS"
 
 | 退出码 / 现象 | 原因 | 处理 |
 | --- | --- | --- |
-| 退出码 `2` | Python < 3.10 | 按第 2 步装 Python 后重试 |
+| 退出码 `2` | Python < 3.10 | 按第 3 步装 Python 后重试 |
 | `stage: "seven_zip"` | 7zr.exe 下载失败且系统没 7-Zip | 让用户装 https://www.7-zip.org/download.html 后重试 |
 | `stage: "engine"` 且提示"所有下载源都连不上" | 网络/代理问题 | 重试一次；仍失败则手动下载 7z 放进 `engine_temp/` 再重试 |
 | `stage: "models"` | 模型包下载失败 | 重试（支持复用已下载的包）；或让用户从 https://github.com/Tsukimisaka/MamboTTS/releases 手动下载后放 `models/` |
