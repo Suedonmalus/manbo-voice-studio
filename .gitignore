@@ -1,0 +1,31 @@
+# ---------- 音色模型（体积大，从上游仓库自行获取，见 models/README.md）----------
+models/*.pth
+models/*.ckpt
+models/*.wav
+
+# ---------- 运行时产物与缓存 ----------
+output/
+logs/
+engine_temp/
+软件测试区域/
+*.log
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+
+# ---------- 本地配置（含本机绝对路径）----------
+config.json
+
+# ---------- 系统 / 编辑器 ----------
+desktop.ini
+Thumbs.db
+.DS_Store
+.idea/
+.vscode/
