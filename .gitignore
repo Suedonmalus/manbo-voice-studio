@@ -8,6 +8,7 @@ output/
 logs/
 engine_temp/
 软件测试区域/
+temp/
 *.log
 
 # ---------- Python ----------
@@ -22,6 +23,18 @@ env/
 
 # ---------- 本地配置（含本机绝对路径）----------
 config.json
+
+# ---------- 密钥 / 凭据（仓库是公开的，一律不提交）----------
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.pfx
+*.p12
+id_rsa*
+credentials.json
+secrets.json
 
 # ---------- 系统 / 编辑器 ----------
 desktop.ini
